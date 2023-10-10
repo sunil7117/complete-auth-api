@@ -2,6 +2,7 @@ import express from "express";
 import dotenv from 'dotenv'
 import { connect } from "./config/connection.js";
 import authRouter from "./routeView/authRoute.js";
+import updateRouter from "./routeView/updateRoute.js";
 dotenv.config()
 const app=express()
 const PORT=process.env.PORT
@@ -12,6 +13,7 @@ app.get('/',(req,res)=>{
     res.send("Welcome to site")
 })
 app.use('/api/auth',authRouter)
+app.use('/api',updateRouter)
 
 connect(DATABASE)
 
