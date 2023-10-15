@@ -22,6 +22,4 @@ app.use("/api", updateRouter);
 
 connect(DATABASE);
 
-app.listen(PORT, () => {
-  console.log(`server started at http://localhost:${PORT}`);
-});
+app.listen(PORT,()=>{console.log(`server started ${PORT}`)})
