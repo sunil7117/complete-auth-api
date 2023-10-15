@@ -27,10 +27,10 @@ export const signin=async(req,res)=>{
         }
         return res.status(403).json("email/password not matched")
     } catch (error) {
-        console.log(error)  
+        console.log("signup api runing but some problems happens")  
     }    
 } catch (error) {
-    console.log(error)
+    console.log("Not runing singup api")
 }
 }
 export const signup=async(req,res)=>{
