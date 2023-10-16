@@ -43,7 +43,7 @@ export const signup=async(req,res)=>{
         const saveData= await data.save(data)
         return res.status(200).json("user register successfull...")
     } catch (error) {
-        return res.status(409).json(error)
+        return res.status(500).json(error)
     }
 
 }
@@ -51,28 +51,47 @@ export const forgetPassword=async(req,res)=>{
     try {
     // Let's Generate a OTP
     const OTP=otpGenerator.generate(6,{lowerCaseAlphabets:false,upperCaseAlphabets:false,specialChars:false})
+    // console.log(OTP)            /* comment this line in production*/
     const user=await UserModel.findOne({email:req.body.email})
     if(!user){
         return res.status(404).json("this user not register with us.")
     } 
     const mail= await mailer({OTP:OTP,Email:req.body.email})
-    req.app.locals.OTP=OTP
+    req.app.locals={
+        OTP:OTP,
+        resetSession:true,
+        email:req.body.email
+    }
     return res.status(200).json(mail)   
 } catch (error) {
-    return res.status(200).json("sunil")
+    return res.status(200).json("Please try again latter! network issue")
     }    
     
 }
 export const verifyOTP=(req,res)=>{
 const userOTP=req.body.code
-    try {
-        if(parseInt(req.app.locals.OTP)===parseInt(userOTP)){
-            res.status(200).json("successful")
-            req.app.locals.OTP=null
-            // req.app.locals.reset=
-        } else{
-            res.status(401).json("Unvalid or expired OTP")
+try {
+    if(parseInt(req.app.locals.OTP)===parseInt(userOTP)){
+        res.status(200).json("successful")
+        req.app.locals.OTP=null
+       } else{
+        res.status(401).json("Unvalid or expired OTP")
         }  
+    } catch (error) {
+        console.log(error)
+    }
+}
+export const updatePassword=async(req,res)=>{
+   const email=req.app.locals.email
+    try {
+        const salt=await bcrypt.genSalt(10)
+        const hash=await bcrypt.hash(req.body.password,salt)
+        await UserModel.findOneAndUpdate({email},{password:hash},{new:true})
+        req.app.locals={
+            resetSession:false,
+            email:null
+        }
+        return res.status(200).json("password changed successfully!.")  
     } catch (error) {
         console.log(error)
     }

@@ -9,7 +9,7 @@ dotenv.config();
 const app = express();
 const PORT = process.env.PORT;
 const DATABASE = process.env.DATABASE_URL;
-console.log(PORT);
+console.log(PORT)
 app.use(express.json());
 app.use(cors());
 app.use(morgan(":url :status"));
