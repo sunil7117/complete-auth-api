@@ -83,15 +83,21 @@ try {
 }
 export const updatePassword=async(req,res)=>{
    const email=req.app.locals.email
+   console.log(email)
     try {
         const salt=await bcrypt.genSalt(10)
         const hash=await bcrypt.hash(req.body.password,salt)
-        await UserModel.findOneAndUpdate({email},{password:hash},{new:true})
-        req.app.locals={
-            resetSession:false,
-            email:null
+        if(email){
+            const user=await UserModel.findOneAndUpdate({email},{password:hash},{new:true})
+            console.log(user)
+            req.app.locals={
+                resetSession:false,
+                email:null
+            }
+            return res.status(200).json("password changed successfully!.")
         }
-        return res.status(200).json("password changed successfully!.")  
+        return res.status(404).json("email and OTP validation not successfull!.")
+          
     } catch (error) {
         console.log(error)
     }
