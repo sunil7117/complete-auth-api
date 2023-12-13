@@ -102,3 +102,16 @@ export const updatePassword=async(req,res)=>{
         console.log(error)
     }
 }
+// get a user 
+export const getuser=async(req,res)=>{
+    try {  
+    const getuser=await UserModel.findById(req.query)
+    if(getuser){
+        const{password,...userdata}=getuser.toJSON()
+        return res.status(200).send(userdata.user_cart)       
+    }
+
+    } catch (error) {
+        console.log(error)
+    }
+}

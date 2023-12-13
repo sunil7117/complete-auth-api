@@ -1,4 +1,5 @@
 import mongoose from "mongoose";
+import { cartSchema } from "./cartModel.js";
 const userSchema = new mongoose.Schema(
   {
     firstName: {
@@ -34,6 +35,11 @@ const userSchema = new mongoose.Schema(
     dob: {
       type: String,
       require: true,
+    },
+    
+    user_cart:{
+      type:Array,
+      default:[]
     },
   },
   { timestamps: true }
