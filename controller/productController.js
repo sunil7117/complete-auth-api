@@ -47,7 +47,7 @@ export const product=async(req,res)=>{
 export const addproduct=async(req,res)=>{
 const headerToken=req.headers.authorization
    try {
-        const token=headerToken.split(" ").pop()
+        const token=headerToken?.split(" ").pop()
         const decode= jwt.verify(token,process.env.ACCESSTOKEN)
         // const decode= jwt.verify(token,process.env.REFRESHTOKEN)
         if(decode.user_type==='admin'){
