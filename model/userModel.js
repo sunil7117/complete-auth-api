@@ -1,5 +1,19 @@
-import mongoose from "mongoose";
-import { cartSchema } from "./cartModel.js";
+import mongoose, { Schema } from "mongoose";
+// Cart schema
+const cartSchema = new mongoose.Schema(
+  {
+   user_id:{
+    type:Schema.Types.ObjectId,
+    ref:"UserModel"
+   },
+   item:[]     
+  },
+  { timestamps: true }
+);
+export const CartModel = mongoose.model("cart", cartSchema);
+
+
+// user schema
 const userSchema = new mongoose.Schema(
   {
     firstName: {
@@ -36,13 +50,20 @@ const userSchema = new mongoose.Schema(
       type: String,
       require: true,
     },
-    
-    user_cart:{
-      type:Array,
-      default:[]
+    user_type:{
+      type:String,
     },
+    // user_cart:{
+    //   type:Array,
+    //   default:[]
+    // },
+    user_cart:{
+      type:Schema.Types.ObjectId,
+      ref:"CartModel"
+    }
+    
   },
   { timestamps: true }
 );
-const UserModel = mongoose.model("user", userSchema);
-export default UserModel;
+export const UserModel = mongoose.model("user", userSchema);
+

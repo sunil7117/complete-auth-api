@@ -1,4 +1,4 @@
-import UserModel from "../model/userModel.js"
+import {UserModel} from "../model/userModel.js"
 
 export const updateStatus=async(req,res)=>{
     try {

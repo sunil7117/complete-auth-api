@@ -11,6 +11,7 @@ export const addimage=(req,res)=>{
 
 export const getimage=async(req,res)=>{
     try {
+        console.log("hello buddy")
         const data=await ProductModel.find(req.query)
         res.send(data)
     } catch (error) {

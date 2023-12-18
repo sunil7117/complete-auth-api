@@ -15,6 +15,8 @@ const storage = multer.diskStorage({
 
 const upload = multer({storage:storage})
 
+// upload a image
+// http://localhost:8000/api/image/upload
 router.post('/upload',upload.single('photo'),addimage)
 
 router.get('/getimage',getimage)

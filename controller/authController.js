@@ -2,15 +2,17 @@ import bcrypt, { genSalt } from "bcrypt";
 import jwt  from "jsonwebtoken";
 
 import otpGenerator from 'otp-generator'
-import UserModel from "../model/userModel.js";
+import {CartModel, UserModel} from "../model/userModel.js";
 import { tokenModel } from "../model/tokenModel.js";
 import { mailer } from '../utils/nodemailer.js';
+
+
+// Let signin a user with auth facility and redirect
+// http://localhost:8000/api/auth/signin
 export const signin=async(req,res)=>{
     const ACCESSTOKEN=process.env.ACCESSTOKEN
     const REFRESHTOKEN=process.env.REFRESHTOKEN
-    console.log(req.body.email)
     const user=await UserModel.findOne({email:req.body.email})
-    console.log(user)
     try {
         if(!user){
         return res.status(404).json("email/password not matched not fouund")
@@ -19,7 +21,7 @@ export const signin=async(req,res)=>{
         const {password,...userdata}=user.toJSON()
         const compare=await bcrypt.compare(req.body.password,user.password)
         if(compare){
-            const accessToken=jwt.sign(userdata,ACCESSTOKEN,{expiresIn:'5m'})
+            const accessToken=jwt.sign(userdata,ACCESSTOKEN,{expiresIn:'1m'})
             const refreshToken=jwt.sign(userdata,REFRESHTOKEN)
             const saveToken=new tokenModel({token:refreshToken})
             await saveToken.save()
@@ -33,25 +35,38 @@ export const signin=async(req,res)=>{
     console.log("Not runing singup api")
 }
 }
-export const signup=async(req,res)=>{
-    try {
-        const {password,...userinput}=req.body
-        const salt=await bcrypt.genSalt(10)
-        const hash=await bcrypt.hash(password,salt)
-        const newData={...userinput,"password":hash}
-        const data=new UserModel(newData)
-        const saveData= await data.save(data)
-        return res.status(200).json("user register successfull...")
-    } catch (error) {
-        return res.status(500).json(error)
-    }
 
+// http://localhost:8000/api/auth/signup
+export const signup=async(req,res)=>{
+        try {
+            const {password,...userinput}=req.body
+            console. log(userinput)
+            const salt=await bcrypt.genSalt(10)
+            console. log("noot ")
+            const hash=await bcrypt.hash(password,salt)
+            const newData={...userinput,"password":hash}
+            // userdata for databse
+            const data=new UserModel(newData)
+            const saveData= await data.save(data)
+            // cart for user
+            const cart=CartModel({
+                user_id:saveData._id,
+                item:[]
+            })
+            await cart.save()
+            return res.status(200).json("user register successfull...")
+        } catch (error) {
+            return  res.status(500).json(error)
+        }
+    
 }
+
+// http://localhost:8000/api/auth/forget
 export const forgetPassword=async(req,res)=>{       
     try {
     // Let's Generate a OTP
     const OTP=otpGenerator.generate(6,{lowerCaseAlphabets:false,upperCaseAlphabets:false,specialChars:false})
-    // console.log(OTP)            /* comment this line in production*/
+    console.log(OTP)            /* comment this line in production*/
     const user=await UserModel.findOne({email:req.body.email})
     if(!user){
         return res.status(404).json("this user not register with us.")
@@ -68,6 +83,8 @@ export const forgetPassword=async(req,res)=>{
     }    
     
 }
+
+// http://localhost:8000/api/auth/verifyOTP
 export const verifyOTP=(req,res)=>{
 const userOTP=req.body.code
 try {
@@ -81,6 +98,8 @@ try {
         console.log(error)
     }
 }
+
+// http://localhost:8000/api/auth/updatepassword
 export const updatePassword=async(req,res)=>{
    const email=req.app.locals.email
    console.log(email)
@@ -102,10 +121,15 @@ export const updatePassword=async(req,res)=>{
         console.log(error)
     }
 }
-// get a user 
+
+
+
+// get a user card detail 
+// http://localhost:8000/api/auth/getuser 
 export const getuser=async(req,res)=>{
     try {  
-    const getuser=await UserModel.findById(req.query)
+        // const getuser=await UserModel.findById(req.body._id)
+        const getuser=await UserModel.findOne(req.body)
     if(getuser){
         const{password,...userdata}=getuser.toJSON()
         return res.status(200).send(userdata.user_cart)       
