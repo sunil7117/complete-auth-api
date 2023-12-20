@@ -20,7 +20,7 @@ console.log(DATABASE)
 console.log(PORT)
 app.use(express.json());
 app.use(cors());
-app.use('/image',express.static('uploadphoto'));
+app.use(express.static('uploadphoto'));
 app.use(morgan(":url :status"));
 app.use(express.urlencoded({ extended: true }));
 
@@ -46,7 +46,6 @@ app.use("/api", updateRouter);
 
 // user..........
 app.use("/api/user",userRouter)
-
 connect(DATABASE);
 
 app.listen(PORT,()=>{console.log(`server started ${PORT}`)})

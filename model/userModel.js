@@ -2,11 +2,12 @@ import mongoose, { Schema } from "mongoose";
 // Cart schema
 const cartSchema = new mongoose.Schema(
   {
-   user_id:{
-    type:Schema.Types.ObjectId,
-    ref:"UserModel"
-   },
-   item:[]     
+   items:[
+    {
+      type:Schema.Types.ObjectId,
+      ref:'product'
+    }
+   ]     
   },
   { timestamps: true }
 );
@@ -50,19 +51,14 @@ const userSchema = new mongoose.Schema(
       type: String,
       require: true,
     },
-    user_type:{
+    role:{
       type:String,
     },
-    // user_cart:{
-    //   type:Array,
-    //   default:[]
-    // },
-    user_cart:{
+    cart:{
       type:Schema.Types.ObjectId,
-      ref:"CartModel"
+      ref:'cart'
     }
-    
-  },
+   },
   { timestamps: true }
 );
 export const UserModel = mongoose.model("user", userSchema);

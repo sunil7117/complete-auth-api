@@ -1,6 +1,5 @@
 import jwt  from "jsonwebtoken";
 import ProductModel from "../model/productmodel.js"
-import {UserModel} from "../model/userModel.js"
 
 // get all product
 // http://localhost:8000/api/product
@@ -50,7 +49,7 @@ const headerToken=req.headers.authorization
         const token=headerToken?.split(" ").pop()
         const decode= jwt.verify(token,process.env.ACCESSTOKEN)
         // const decode= jwt.verify(token,process.env.REFRESHTOKEN)
-        if(decode.user_type==='admin'){
+        if(decode.role==='admin'){
             try {
                const photo=req.app.locals.photo
                 if(photo===undefined){
@@ -71,34 +70,4 @@ const headerToken=req.headers.authorization
     }
 
 
-}
-
-// add a product in cart
-export const addCart=async(req,res)=>{
-    const _id=req.body._id
-    const product_info=req.body.product_info
-    console.log(req.body)
-    // res.send(product_info)
-    try {
-        const updatedcart =await UserModel.findByIdAndUpdate({_id},
-            { $push: { user_cart: { $each: [product_info] } } },
-            { new: true })
-        return res.send(updatedcart)
-    } catch (error) {
-        
-    }
-}
-
-
-// Delete a cart item from user cart
-export const deletecartitem=async(req,res)=>{
-    const id=req.params.id
-    // res.send(product_info)
-    try {                                                   
-        const deletecart =await UserModel.user_cart.find({_id:"657286ad9d3240974f6ba3ed"})
-        // res.send(id)
-        return res.send(deletecart)
-    } catch (error) {
-        
-    }
 }

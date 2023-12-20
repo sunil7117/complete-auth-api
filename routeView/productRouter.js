@@ -1,6 +1,6 @@
 import express  from "express";
 const router=express.Router()
-import { addCart, addproduct, allproduct, deletecartitem, product, searchproduct } from "../controller/productController.js";
+import { addproduct, allproduct,product, searchproduct } from "../controller/productController.js";
 
 
 // get a list of all products
@@ -13,7 +13,7 @@ router.get('/search',searchproduct)
 router.get('/p_id/:_id',product)
 
 
-// add a product 
+// add a product
 router.post('/addproduct',addproduct)
 
 

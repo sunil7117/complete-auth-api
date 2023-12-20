@@ -21,7 +21,7 @@ export const signin=async(req,res)=>{
         const {password,...userdata}=user.toJSON()
         const compare=await bcrypt.compare(req.body.password,user.password)
         if(compare){
-            const accessToken=jwt.sign(userdata,ACCESSTOKEN,{expiresIn:'1m'})
+            const accessToken=jwt.sign(userdata,ACCESSTOKEN,{expiresIn:'5m'})
             const refreshToken=jwt.sign(userdata,REFRESHTOKEN)
             const saveToken=new tokenModel({token:refreshToken})
             await saveToken.save()
@@ -40,21 +40,27 @@ export const signin=async(req,res)=>{
 export const signup=async(req,res)=>{
         try {
             const {password,...userinput}=req.body
-            console. log(userinput)
             const salt=await bcrypt.genSalt(10)
-            console. log("noot ")
             const hash=await bcrypt.hash(password,salt)
-            const newData={...userinput,"password":hash}
-            // userdata for databse
-            const data=new UserModel(newData)
-            const saveData= await data.save(data)
-            // cart for user
-            const cart=CartModel({
-                user_id:saveData._id,
-                item:[]
-            })
-            await cart.save()
-            return res.status(200).json("user register successfull...")
+             
+            if(userinput.role==='admin'){
+                const data={...userinput,"password":hash}
+                const admin=new UserModel(data)
+                await admin.save()
+                return res.status(200).json("user register successfull...")
+            }else{
+                 // cart for user
+                const cart=CartModel({
+                    items:[]
+                })
+                const data={...userinput,"password":hash,cart}
+                const newuser=new UserModel(data)
+                // userdata for databse
+                await newuser.save()
+                await cart.save()
+                 return res.status(200).json("user register successfull...")
+            }
+            
         } catch (error) {
             return  res.status(500).json(error)
         }
@@ -138,4 +144,16 @@ export const getuser=async(req,res)=>{
     } catch (error) {
         console.log(error)
     }
+}
+
+// Redirect a user 
+// http://localhost:8000/api/auth/redirect,{bodydata}
+export const redirect=(req,res)=>{
+const token=req.body.token
+    try {
+        const user=jwt.verify(token,process.env.REFRESHTOKEN)
+        res.status(200).json(user)
+} catch (error) {
+        res.send(error)   
+}
 }
