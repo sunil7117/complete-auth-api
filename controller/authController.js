@@ -25,6 +25,7 @@ export const signin=async(req,res)=>{
             const refreshToken=jwt.sign(userdata,REFRESHTOKEN)
             const saveToken=new tokenModel({token:refreshToken})
             await saveToken.save()
+            console.log("user found")
             return res.status(200).json({accessToken:accessToken,refreshToken:refreshToken,userdata})
         }
         return res.status(403).json("email/password not matched")
