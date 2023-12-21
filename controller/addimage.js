@@ -2,13 +2,14 @@ import ProductModel from "../model/productmodel.js";
   
 
 export const addimage=(req,res)=>{
-    return res.send(req.file.fieldname)
     try {
         req.app.locals={
             photo:req.file.filename,
         }
+        console.log("image uploaded")
         return res.send(req.file)
     } catch (error) {
+        console.log("image uploading failed")
         return res.send(error)
     }
     
