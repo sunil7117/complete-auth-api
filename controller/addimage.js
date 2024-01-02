@@ -2,6 +2,8 @@ import ProductModel from "../model/productmodel.js";
   
 
 export const addimage=(req,res)=>{
+    console.log("hello image")
+    console.log(req.file)
     try {
         req.app.locals={
             photo:req.file.filename,

@@ -1,7 +1,7 @@
 import mongoose from "mongoose";
 const productSchema=new mongoose.Schema({
-product_name:{
-    type:String,
+    product_name:{
+        type:String,
         required:true,
     },
     product_color:{
@@ -30,11 +30,18 @@ product_name:{
     },
     product_stock:{
         type:Boolean,
-        required:true
     },
     product_weight:{
         type:String,
     },
+    product_total:{
+        type:Number,
+        default:10
+    },
+    product_soldout:{
+        type:Number,
+        default:0
+    }
 
 },{timestamps:true})
 

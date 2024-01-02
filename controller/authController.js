@@ -5,6 +5,7 @@ import otpGenerator from 'otp-generator'
 import {CartModel, UserModel} from "../model/userModel.js";
 import { tokenModel } from "../model/tokenModel.js";
 import { mailer } from '../utils/nodemailer.js';
+import { addressModel } from "../model/addressModel.js";
 
 
 // Let signin a user with auth facility and redirect
@@ -54,11 +55,15 @@ export const signup=async(req,res)=>{
                 const cart=CartModel({
                     items:[]
                 })
-                const data={...userinput,"password":hash,cart}
+                const addresslist=addressModel({
+                    addresslist:[]
+                })
+                const data={...userinput,"password":hash,cart,addresslist}
                 const newuser=new UserModel(data)
                 // userdata for databse
-                await newuser.save()
                 await cart.save()
+                await addresslist.save()
+                await newuser.save()
                  return res.status(200).json("user register successfull...")
             }
             

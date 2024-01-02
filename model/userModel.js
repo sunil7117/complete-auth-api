@@ -13,7 +13,6 @@ const cartSchema = new mongoose.Schema(
 );
 export const CartModel = mongoose.model("cart", cartSchema);
 
-
 // user schema
 const userSchema = new mongoose.Schema(
   {
@@ -57,7 +56,11 @@ const userSchema = new mongoose.Schema(
     cart:{
       type:Schema.Types.ObjectId,
       ref:'cart'
-    }
+    },
+    addresslist:{
+      type:Schema.Types.ObjectId,
+      ref:'addresslist'
+    },
    },
   { timestamps: true }
 );
