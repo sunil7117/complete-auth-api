@@ -14,8 +14,8 @@ const storage = multer.diskStorage({
 
 
 
-const upload = multer({ dest: 'images/' })
-// const upload = multer({storage:storage})
+// const upload = multer({ dest: 'images/' })
+const upload = multer({storage:storage})
 
 // upload a image
 // http://localhost:8000/api/image/upload
